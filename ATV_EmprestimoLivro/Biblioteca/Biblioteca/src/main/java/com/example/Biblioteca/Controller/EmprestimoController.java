@@ -4,57 +4,56 @@ import com.example.Biblioteca.DTO.EmprestimoDTO;
 import com.example.Biblioteca.Entity.Emprestimo;
 import com.example.Biblioteca.Service.EmprestimoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/emprestimo")
+@RequestMapping("/emprestimos") // Usar plural é mais RESTful
 public class EmprestimoController {
 
+    private final EmprestimoService emprestimoService;
+
     @Autowired
-    private EmprestimoService emprestimoService;
+    public EmprestimoController(EmprestimoService emprestimoService) {
+        this.emprestimoService = emprestimoService;
+    }
 
+    // Buscar todos os empréstimos
     @GetMapping
-    public ResponseEntity<List<Emprestimo>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(emprestimoService.getAll());
+    public ResponseEntity<List<Emprestimo>> listarTodos() {
+        List<Emprestimo> emprestimos = emprestimoService.getAll();
+        return ResponseEntity.ok(emprestimos);
     }
 
+    // Buscar empréstimo por ID
     @GetMapping("/{id}")
-    public ResponseEntity<EmprestimoDTO> getById(@PathVariable Long id) {
-        Optional<EmprestimoDTO> emprestimoDTO = emprestimoService.getById(id);
-        if (emprestimoDTO.isPresent()) {
-            return ResponseEntity.ok(emprestimoDTO.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<EmprestimoDTO> buscarPorId(@PathVariable Long id) {
+        return emprestimoService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // Criar um novo empréstimo
     @PostMapping
-    public ResponseEntity<EmprestimoDTO> create(@RequestBody EmprestimoDTO emprestimoDto) {
-        EmprestimoDTO emprestimo = emprestimoService.save(emprestimoDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(emprestimo);
+    public ResponseEntity<EmprestimoDTO> criar(@RequestBody EmprestimoDTO emprestimoDto) {
+        EmprestimoDTO novoEmprestimo = emprestimoService.save(emprestimoDto);
+        return ResponseEntity.status(201).body(novoEmprestimo);
     }
 
+    // Atualizar um empréstimo existente
     @PutMapping("/{id}")
-    public ResponseEntity<EmprestimoDTO> update(@PathVariable Long id, @RequestBody EmprestimoDTO emprestimoDTO) {
-        Optional<EmprestimoDTO> emprestimoAtualizado = emprestimoService.updateEmprestimo(id, emprestimoDTO);
-        if (emprestimoAtualizado.isPresent()) {
-            return ResponseEntity.ok(emprestimoAtualizado.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<EmprestimoDTO> atualizar(@PathVariable Long id, @RequestBody EmprestimoDTO emprestimoDTO) {
+        return emprestimoService.updateEmprestimo(id, emprestimoDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // Deletar um empréstimo por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (emprestimoService.delete(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        boolean deletado = emprestimoService.delete(id);
+        return deletado ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

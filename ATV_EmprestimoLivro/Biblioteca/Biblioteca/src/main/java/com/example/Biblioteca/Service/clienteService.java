@@ -65,16 +65,17 @@ public class clienteService {
         //verifica se encontrou algum cliente para ser atualizado
         if(optionalCliente.isPresent()){
             // caso encontrar um cliente, instancia uma entidade com o nome "cliente", passando o cliente que esta no banco de dados
-            Cliente cliente = Cliente.get();
+            Cliente cliente = optionalCliente.get();
             // atualizando os dados da entidade "cliente" que veio do banco de dados
             cliente.setNome(clienteDTO.getNome());
+            cliente.setSobrenome(clienteDTO.getSobrenome));
             cliente.setCpf(clienteDTO.getCpf());
 
             // salva no banco dados o cliente com o dados atualizados
-            Cliente clienteUpdate = clienteRepository.save(cliente);
+            Cliente  = clienteRepository.save(cliente);
 
             // transforma a entidade cliente que veio como retorno do banco de dados em um DTO para ser retornado
-            return Optional.of(this.toDTO(clienteUpdate));
+            return Optional.of(clienteDTO.fromCliente(cliente));
         }else { // se nao encontrar retonar um Objeto Optinal vazio.
             return Optional.empty();
         }
@@ -91,5 +92,4 @@ public class clienteService {
             return false;
         }
     }
-
 }

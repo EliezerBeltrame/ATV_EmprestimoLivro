@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 @Data
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 
 
-public class EmprestimoDTOResponse {
+public class EmprestimoDTOResponse implements Serializable {
     private Long id;
     private LocalDate data_inicio;
     private LocalDate data_final;
@@ -21,8 +22,23 @@ public class EmprestimoDTOResponse {
     public List<Emprestimo> emprestimos;
 
 
-    public EmprestimoDTOResponse(){
-
+    public Emprestimo toEmprestimo(){
+        return new Emprestimo(
+                this.id,
+                this.dataInicial,
+                this.dataFinal,
+                this.getCliente(),
+                this.livros
+        );
     }
 
+    public EmprestimoDTO fromEmprestimo(Emprestimo emprestimo) {
+        return new EmprestimoDTO(
+                emprestimo.getId(),
+                emprestimo.getDataInicial(),
+                emprestimo.getDataFinal(),
+                emprestimo.getCliente(),
+                emprestimo.getLivros()
+        );
+    }
 }

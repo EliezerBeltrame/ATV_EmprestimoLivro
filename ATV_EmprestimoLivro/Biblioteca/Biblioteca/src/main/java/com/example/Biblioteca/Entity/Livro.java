@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity // Cria a tabela no banco de dados
 @Data // Com o Lombok cria os metodos get/setter
@@ -16,17 +17,20 @@ public class Livro implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String nome;
-
     private String autor;
-
-    private long isbn;
-
+    private long ISBN;
+    @Column(unique = true)
     private String genero;
-    @ManyToOne
-    @JoinColumn(name = "idEmprestimo", referencedColumnName = "idEmprestimo")
-    @JsonIgnoreProperties("livro")
-    private Emprestimo emprestimo;
+    @ManyToMany(mappedBy = "livros")
+    private Set<Emprestimo> emprestimos;
 
+    public Livro(long id, String nome, String autor, long ISBN, String genero, Set<Emprestimo> emprestimos) {
+        this.id = id;
+        this.nome = nome;
+        this.autor = autor;
+        this.ISBN = ISBN;
+        this.genero = genero;
+        this.emprestimos = emprestimos;
+    }
 }

@@ -28,9 +28,9 @@ public class ClienteController {
     // Endpoint para buscar um cliente por ID
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDTO> getById(@PathVariable Long id) {
-        Optional<ClienteDTO> clienteDTO = clienteService.getById(id);
-        if (clienteDTO.isPresent()) {
-            return ResponseEntity.ok(clienteDTO.get());
+        Optional<ClienteDTO> clienteDTOOptional = clienteService.getById(id);
+        if (clienteDTOOptional.isPresent()) {
+            return ResponseEntity.ok(clienteDTOOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -39,8 +39,8 @@ public class ClienteController {
     // Endpoint para criar um novo cliente
     @PostMapping
     public ResponseEntity<ClienteDTO> create(@RequestBody ClienteDTO clienteDto) {
-        ClienteDTO cliente = clienteService.save(clienteDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
+        ClienteDTO clienteDTOSave = clienteService.create(clienteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteDTOSave);
     }
 
     // Endpoint para atualizar um cliente existente
