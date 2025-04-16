@@ -26,8 +26,8 @@ public class ClienteDTO implements Serializable {
         );
     }
 
-    // Método para criar um DTO a partir de uma entidade Cliente
-    public static ClienteDTO fromCliente(Cliente cliente) {
+
+    public  ClienteDTO fromCliente(Cliente cliente) {
         return new ClienteDTO(
                 cliente.getId(),
                 cliente.getNome(),

@@ -32,7 +32,7 @@ public class LivroService {
         livroDTO.setId(livro.getId());
         livroDTO.setNome(livro.getNome());
         livroDTO.setAutor(livro.getAutor());
-        livroDTO.setISBN(livro.getIsbn());
+        livroDTO.setISBN(livro.getISBN());
         livroDTO.setGenero(livro.getGenero()); // Faltava adicionar o genero
 
         return livroDTO;

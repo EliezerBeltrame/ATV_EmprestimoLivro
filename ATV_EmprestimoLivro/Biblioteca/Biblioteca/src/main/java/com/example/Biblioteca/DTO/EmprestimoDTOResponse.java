@@ -1,6 +1,8 @@
 package com.example.Biblioteca.DTO;
 
+import com.example.Biblioteca.Entity.Cliente;
 import com.example.Biblioteca.Entity.Emprestimo;
+import com.example.Biblioteca.Entity.Livro;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +20,9 @@ public class EmprestimoDTOResponse implements Serializable {
     private Long id;
     private LocalDate data_inicio;
     private LocalDate data_final;
-    private Emprestimo emprestimo;
-    public List<Emprestimo> emprestimos;
+    private Cliente cliente;
+    public List<Livro> livros;
+
 
 
 }

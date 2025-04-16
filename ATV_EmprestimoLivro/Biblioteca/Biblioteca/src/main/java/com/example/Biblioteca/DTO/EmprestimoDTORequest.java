@@ -33,8 +33,8 @@ public class EmprestimoDTORequest implements Serializable {
     }
 
     // Método para converter de Emprestimo (Entidade) para EmprestimoDTO
-    public EmprestimoDTO toEmprestimoDTO(Emprestimo emprestimo) {
-        return new EmprestimoDTO(
+    public EmprestimoDTORequest toEmprestimoDTO(Emprestimo emprestimo) {
+        return new EmprestimoDTORequest(
                 emprestimo.getId(),
                 emprestimo.getData_inicio(),
                 emprestimo.getData_final(),

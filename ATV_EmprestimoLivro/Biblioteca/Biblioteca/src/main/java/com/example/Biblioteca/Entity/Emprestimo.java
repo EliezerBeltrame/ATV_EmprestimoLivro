@@ -25,8 +25,8 @@ public class Emprestimo implements Serializable {
 
     // Relacionamento Muitos para Um com Cliente
     @ManyToOne
-    @JoinColumn(name = "cliente_id", referencedColumnName = "id") // Melhor nomenclatura para a chave estrangeira
-    @JsonManagedReference // Evita recursão infinita (lado "mestre" do relacionamento)
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Cliente cliente;
 
     // Relacionamento Muitos para Muitos com Livro

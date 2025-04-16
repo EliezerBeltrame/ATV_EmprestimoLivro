@@ -9,20 +9,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class clienteService {
+public class ClienteService {
+
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public Cliente fromDTO(ClienteDTO clienteDTO){
+    // Converte de ClienteDTO para Cliente
+    public Cliente fromDTO(ClienteDTO clienteDTO) {
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDTO.getNome());
-        cliente.setCpf(cliente.getCpf());
+        cliente.setCpf(clienteDTO.getCpf()); // Corrigido aqui
+        cliente.setSobrenome(clienteDTO.getSobrenome()); // Adicionando o sobrenome
 
         return cliente;
     }
 
-    // converte Cliente para ClienteDTO
-    public ClienteDTO toDTO(Cliente cliente){
+    // Converte Cliente para ClienteDTO
+    public ClienteDTO toDTO(Cliente cliente) {
         ClienteDTO clienteDTO = new ClienteDTO();
         clienteDTO.setId(cliente.getId());
         clienteDTO.setNome(cliente.getNome());
@@ -32,63 +35,54 @@ public class clienteService {
         return clienteDTO;
     }
 
-    public List<Cliente> getAll(){
-        return clienteRepository.findAll();
+    // Busca todos os clientes
+    public List<ClienteDTO> getAll() {
+        List<Cliente> clientes = clienteRepository.findAll();
+        return clientes.stream()
+                .map(this::toDTO) // Converte cada cliente para ClienteDTO
+                .collect(Collectors.toList());
     }
 
-    public Optional<ClienteDTO> getById(Long id){
-        // busca o cliente no banco de dados com base no ID
+    // Busca um cliente pelo ID e retorna o DTO
+    public Optional<ClienteDTO> getById(Long id) {
         Optional<Cliente> optionalCliente = clienteRepository.findById(id);
-        if(optionalCliente.isPresent()){// verifica se encontrou algum cliente
-            // transforma a entidade cliente para DTO
-            // e também coloca dentro de um objeto Optional
-            return Optional.of(this.toDTO(Cliente.get()));
-        }else {
-            return Optional.empty(); // um objeto Optional vazio.
+        if (optionalCliente.isPresent()) {
+            return Optional.of(this.toDTO(optionalCliente.get())); // Corrigido
+        } else {
+            return Optional.empty(); // Retorna Optional vazio caso não encontre
         }
-//        return clieenteRepository.findById(id).map(this::toDTO);
     }
 
-    public ClienteDTO save(ClienteDTO clienteDTO){
-        // converte de DTO para Entidade
-        Cliente cliente = this.fromDTO(clienteDTO);
-        // salva no banco de dados a entidade
-        Cliente clienteBd = clienteRepository.save(cliente);
-        // da return transformando novamente para DTO
-        return this.toDTO(clienteBd);
+    // Salva um novo cliente
+    public ClienteDTO save(ClienteDTO clienteDTO) {
+        Cliente cliente = this.fromDTO(clienteDTO); // Converte o DTO para entidade
+        Cliente clienteBd = clienteRepository.save(cliente); // Salva a entidade no banco
+        return this.toDTO(clienteBd); // Retorna o DTO do cliente salvo
     }
 
-    public Optional<ClienteDTO> updateCliente(Long id, ClienteDTO clienteDTO){
-        // busca o cliente no banco de dados com base no ID enviado
+    // Atualiza um cliente existente
+    public Optional<ClienteDTO> updateCliente(Long id, ClienteDTO clienteDTO) {
         Optional<Cliente> optionalCliente = clienteRepository.findById(id);
-        //verifica se encontrou algum cliente para ser atualizado
-        if(optionalCliente.isPresent()){
-            // caso encontrar um cliente, instancia uma entidade com o nome "cliente", passando o cliente que esta no banco de dados
+        if (optionalCliente.isPresent()) {
             Cliente cliente = optionalCliente.get();
-            // atualizando os dados da entidade "cliente" que veio do banco de dados
             cliente.setNome(clienteDTO.getNome());
-            cliente.setSobrenome(clienteDTO.getSobrenome));
+            cliente.setSobrenome(clienteDTO.getSobrenome()); // Corrigido
             cliente.setCpf(clienteDTO.getCpf());
 
-            // salva no banco dados o cliente com o dados atualizados
-            Cliente  = clienteRepository.save(cliente);
-
-            // transforma a entidade cliente que veio como retorno do banco de dados em um DTO para ser retornado
-            return Optional.of(clienteDTO.fromCliente(cliente));
-        }else { // se nao encontrar retonar um Objeto Optinal vazio.
-            return Optional.empty();
+            Cliente clienteUpdated = clienteRepository.save(cliente); // Atualiza no banco
+            return Optional.of(this.toDTO(clienteUpdated)); // Retorna o DTO do cliente atualizado
+        } else {
+            return Optional.empty(); // Retorna Optional vazio caso não encontre o cliente
         }
     }
 
-    public boolean delete(Long id){
-        // funcao verifica se existe se esse id existe no banco de dados
-        // se ele existir acontece o delete
-        // assim não precisa trazer o objeto inteiro para ser deletado, melhorando o desempenho
-        if(clienteRepository.existsById(id)){
-            clienteRepository.deleteById(id);
+    // Deleta um cliente pelo ID
+    public boolean delete(Long id) {
+        if (clienteRepository.existsById(id)) {
+            clienteRepository.deleteById(id); // Deleta o cliente no banco
             return true;
-        }else {
-            return false;
+        } else {
+            return false; // Retorna false caso o cliente não seja encontrado
         }
     }
 }

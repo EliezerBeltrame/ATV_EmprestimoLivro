@@ -16,7 +16,9 @@ public class LivroDTO implements Serializable {
     private String autor;
     private long ISBN;
     private String genero;
-
+    // converte os PodutoDTO em Produto
+    // Conversão é necessária para depois das valições e regras de neogico aplicada no DTO transforme para
+    // Entidade(Produto) para salvar os dados corretos no banco
 
     public Livro toLivro() {
         return new Livro(
@@ -28,7 +30,9 @@ public class LivroDTO implements Serializable {
         );
     }
 
-
+    // converte Produto em ProdutoDTO
+    // Conversão necessária porque o usuário
+    // não tenha contato com a Entidade do banco de dados, assim matemos a segurança do sistema.
     public LivroDTO fromLivro(Livro livro) {
         return new LivroDTO(
                 livro.getId(),

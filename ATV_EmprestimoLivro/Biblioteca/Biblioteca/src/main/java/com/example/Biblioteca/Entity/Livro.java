@@ -32,7 +32,7 @@ public class Livro implements Serializable {
     private Set<Emprestimo> emprestimos;
 
     // Construtor personalizado, se necessário
-    public Livro(Long id, String nome, String autor, Long ISBN, String genero, Set<Emprestimo> emprestimos) {
+    public Livro(Long id, String nome, String autor, Long ISBN, String genero) {
         this.id = id;
         this.nome = nome;
         this.autor = autor;
