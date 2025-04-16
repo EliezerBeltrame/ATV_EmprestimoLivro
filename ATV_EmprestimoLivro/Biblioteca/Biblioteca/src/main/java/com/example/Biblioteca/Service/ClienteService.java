@@ -36,11 +36,9 @@ public class ClienteService {
     }
 
     // Busca todos os clientes
-    public List<ClienteDTO> getAll() {
-        List<Cliente> clientes = clienteRepository.findAll();
-        return clientes.stream()
-                .map(this::toDTO) // Converte cada cliente para ClienteDTO
-                .collect(Collectors.toList());
+    public List<Cliente> getAll() {
+        return clienteRepository.findAll();
+
     }
 
     // Busca um cliente pelo ID e retorna o DTO

@@ -1,5 +1,4 @@
 package com.example.Biblioteca.Controller;
-
 import com.example.Biblioteca.DTO.EmprestimoDTORequest;
 import com.example.Biblioteca.DTO.EmprestimoDTOResponse;
 import com.example.Biblioteca.Service.EmprestimoService;
@@ -43,10 +42,14 @@ public class EmprestimoController {
     // Endpoint para atualizar um empréstimo existente
     @PutMapping("/{id}")
     public ResponseEntity<EmprestimoDTOResponse> update(@PathVariable Long id, @RequestBody EmprestimoDTORequest emprestimoDTORequest) {
-        Optional<EmprestimoDTOResponse> emprestimoDTOOptional = emprestimoService.updateEmprestimo(id, emprestimoDTORequest);
-        return emprestimoDTOOptional.map(ResponseEntity::ok) // Se encontrado, retorna 200 OK com o DTO
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // Caso contrário, 404
+        Optional<EmprestimoDTOResponse> emprestimoDTOOptional = emprestimoService.update(id, emprestimoDTORequest);
+        if (emprestimoDTOOptional.isPresent()) {  // Verificando se o Optional contém um valor
+            return ResponseEntity.ok(emprestimoDTOOptional.get()); // Retorna o valor do Optional
+        } else {
+            return ResponseEntity.notFound().build();  // Caso não tenha encontrado, retorna 404
+        }
     }
+
 
     // Endpoint para deletar um empréstimo
     @DeleteMapping("/{id}")
