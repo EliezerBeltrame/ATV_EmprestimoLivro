@@ -1,7 +1,6 @@
 package com.example.Biblioteca.Controller;
 
 import com.example.Biblioteca.DTO.ClienteDTO;
-import com.example.Biblioteca.Entity.Cliente;
 import com.example.Biblioteca.Service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cliente")
@@ -20,20 +20,20 @@ public class ClienteController {
 
     // Endpoint para buscar todos os clientes
     @GetMapping
-    public ResponseEntity<List<Cliente>> getAll() {
-        List<Cliente> clientes = clienteService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(clientes);
+    public ResponseEntity<List<ClienteDTO>> getAll() {
+        List<ClienteDTO> clientesDTO = clienteService.getAll()
+                .stream()
+                .map(clienteService::toDTO) // Mapeia cada Cliente para ClienteDTO
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(clientesDTO);
     }
 
     // Endpoint para buscar um cliente por ID
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDTO> getById(@PathVariable Long id) {
         Optional<ClienteDTO> clienteDTOOptional = clienteService.getById(id);
-        if (clienteDTOOptional.isPresent()) {
-            return ResponseEntity.ok(clienteDTOOptional.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return clienteDTOOptional.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     // Endpoint para criar um novo cliente
@@ -47,11 +47,8 @@ public class ClienteController {
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDTO> update(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
         Optional<ClienteDTO> clienteAtualizado = clienteService.updateCliente(id, clienteDTO);
-        if (clienteAtualizado.isPresent()) {
-            return ResponseEntity.ok(clienteAtualizado.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return clienteAtualizado.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     // Endpoint para deletar um cliente pelo ID

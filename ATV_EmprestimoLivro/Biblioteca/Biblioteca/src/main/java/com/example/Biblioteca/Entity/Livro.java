@@ -1,6 +1,6 @@
 package com.example.Biblioteca.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importando corretamente
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,22 +10,29 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Entity // Cria a tabela no banco de dados
-@Data // Com o Lombok cria os metodos get/setter
-@AllArgsConstructor // cria construtor com todos os atributos
-@NoArgsConstructor // cria um construtor vazio (necessário para o Hibernet)
+@Data // Com o Lombok cria os métodos get/setter
+@AllArgsConstructor // Cria construtor com todos os atributos
+@NoArgsConstructor // Cria um construtor vazio (necessário para o Hibernate)
 public class Livro implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id; // Melhor usar Long ao invés de long
+
     private String nome;
     private String autor;
-    private long ISBN;
+
+    private Long ISBN;  // Mudança para Long, permitindo valores nulos
+
     @Column(unique = true)
     private String genero;
+
     @ManyToMany(mappedBy = "livros")
+    @JsonIgnoreProperties("livros") // Ignora a propriedade 'livros' na serialização de 'Emprestimo'
     private Set<Emprestimo> emprestimos;
 
-    public Livro(long id, String nome, String autor, long ISBN, String genero, Set<Emprestimo> emprestimos) {
+    // Construtor personalizado, se necessário
+    public Livro(Long id, String nome, String autor, Long ISBN, String genero, Set<Emprestimo> emprestimos) {
         this.id = id;
         this.nome = nome;
         this.autor = autor;

@@ -14,7 +14,6 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class EmprestimoDTORequest implements Serializable {
     private long id;
     private LocalDate data_inicio;
@@ -22,21 +21,23 @@ public class EmprestimoDTORequest implements Serializable {
     private Cliente cliente;
     private Set<Livro> livros;
 
-    public Emprestimo toEmprestimo(){
+    // Método para converter de EmprestimoDTORequest para Emprestimo (Entidade)
+    public Emprestimo toEmprestimo() {
         return new Emprestimo(
                 this.id,
-                this.dataInicial,
-                this.dataFinal,
-                this.getCliente(),
+                this.data_inicio,
+                this.data_final,
+                this.cliente,
                 this.livros
         );
     }
 
-    public EmprestimoDTO fromEmprestimo(Emprestimo emprestimo) {
+    // Método para converter de Emprestimo (Entidade) para EmprestimoDTO
+    public EmprestimoDTO toEmprestimoDTO(Emprestimo emprestimo) {
         return new EmprestimoDTO(
                 emprestimo.getId(),
-                emprestimo.getDataInicial(),
-                emprestimo.getDataFinal(),
+                emprestimo.getData_inicio(),
+                emprestimo.getData_final(),
                 emprestimo.getCliente(),
                 emprestimo.getLivros()
         );

@@ -1,39 +1,40 @@
 package com.example.Biblioteca.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference; // Importando corretamente
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Entity // Cria a tabela no banco de dados
-@Data // Com o Lombok cria os metodos get/setter
-@AllArgsConstructor // cria construtor com todos os atributos
-@NoArgsConstructor // cria um construtor vazio (necessário para o Hibernet)
-
+@Data // Com o Lombok cria os métodos getter/setter
+@AllArgsConstructor // Cria construtor com todos os atributos
+@NoArgsConstructor // Cria um construtor vazio (necessário para o Hibernate)
 public class Emprestimo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDate data_inicio;
     private LocalDate data_final;
 
+    // Relacionamento Muitos para Um com Cliente
     @ManyToOne
-    @JoinColumn(name = "idCliente", referencedColumnName = "id")
-    @JsonManagedReference
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id") // Melhor nomenclatura para a chave estrangeira
+    @JsonManagedReference // Evita recursão infinita (lado "mestre" do relacionamento)
     private Cliente cliente;
 
+    // Relacionamento Muitos para Muitos com Livro
     @ManyToMany
     @JoinTable(
-            name = "emprestimo_livro",
-            joinColumns = @JoinColumn(name = "emprestimo_id"),
-           inverseJoinColumns = @JoinColumn(name = "livro_id")
+            name = "emprestimo_livro", // Nome da tabela de junção
+            joinColumns = @JoinColumn(name = "emprestimo_id"), // Coluna de junção com Emprestimo
+            inverseJoinColumns = @JoinColumn(name = "livro_id") // Coluna de junção com Livro
     )
     private Set<Livro> livros;
 
