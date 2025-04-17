@@ -25,8 +25,7 @@ public class EmprestimoService {
     public Optional<EmprestimoDTOResponse> getAll(Long id) {
         Optional<Emprestimo> emprestimosOptional = emprestimoRepository.findById(id);
         if(emprestimosOptional.isPresent()){
-            EmprestimoDTOResponse emprestimoDTOResponse = new EmprestimoDTOResponse();
-            return Optional.of(emprestimoDTOResponse.fromEmprestimo(emprestimosOptional.get()));
+            return Optional.of(toDTO(emprestimosOptional.get()));
         }else {
             return Optional.empty();
         }
@@ -34,9 +33,9 @@ public class EmprestimoService {
 
     // Salva um empréstimo, criando um novo
     public EmprestimoDTOResponse save(EmprestimoDTORequest emprestimoDTORequest) {
-        Emprestimo emprestimo = EmprestimoDTOResponse.toEmprestimoResponse();
+        Emprestimo emprestimo = fromDTO(emprestimoDTORequest);
         emprestimo= emprestimoRepository.save(emprestimo);
-        return EmprestimoDTOResponse.fromEmprestimo(emprestimo);
+        return toDTO(emprestimo);
     }
 
     // Atualiza um empréstimo existente
@@ -47,9 +46,9 @@ public class EmprestimoService {
             emprestimo.setData_inicio(emprestimoDTORequest.getData_inicio());
             emprestimo.setData_final(emprestimoDTORequest.getData_final());//pode ou não ter
             emprestimo.setCliente(emprestimoDTORequest.getCliente()); // aqui tambem
-            emprestimo.setLivros(emprestimoDTORequest.getLivros());
+            emprestimo.setLivros(emprestimoDTORequest.getLivros()); //esta dando erro aqui
 
-            Emprestimo  emprestimoRepository.save(emprestimo); // Atualiza o empréstimo no banco
+            Emprestimo  updatedEmprestimo = emprestimoRepository.save(emprestimo); // Atualiza o empréstimo no banco
             return Optional.of(this.toDTO(updatedEmprestimo)); // Retorna o DTO atualizado
         } else {
             return Optional.empty(); // Caso o empréstimo não seja encontrado
@@ -62,6 +61,7 @@ public class EmprestimoService {
         emprestimo.setData_inicio(emprestimoDTORequest.getData_inicio());
         emprestimo.setData_final(emprestimoDTORequest.getData_final());
         emprestimo.setCliente(emprestimoDTORequest.getCliente()); // Cliente vindo do DTO
+        emprestimo.setCliente(emprestimoDTORequest.getLivros());
 
 
         return emprestimo;
@@ -73,6 +73,7 @@ public class EmprestimoService {
         emprestimoDTOResponse.setId(emprestimo.getId());
         emprestimoDTOResponse.setData_inicio(emprestimo.getData_inicio());
         emprestimoDTOResponse.setData_final(emprestimo.getData_final());
+
         // Você pode adicionar outros campos na conversão se necessário
 
         return emprestimoDTOResponse;

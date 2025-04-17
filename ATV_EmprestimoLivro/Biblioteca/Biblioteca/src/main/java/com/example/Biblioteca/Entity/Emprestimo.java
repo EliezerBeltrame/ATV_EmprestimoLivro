@@ -1,6 +1,5 @@
 package com.example.Biblioteca.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference; // Importando corretamente
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
