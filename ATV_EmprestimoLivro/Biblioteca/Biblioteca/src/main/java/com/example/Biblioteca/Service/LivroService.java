@@ -15,13 +15,36 @@ public class LivroService {
     @Autowired
     private LivroRepository livroRepository;
 
+    // Busca todos os livros
+    public List<Livro> getAll() {
+        return livroRepository.findAll();
+    }
+
+    public List<Livro> getAllByName(String nome){
+        return livroRepository.findAllByNome(nome);
+    }
+
+
+
+
+    // Busca um livro pelo ID
+    public Optional<LivroDTO> getById(Long id) {
+        Optional<Livro> optionalLivro = livroRepository.findById(id);
+        if (optionalLivro.isPresent()) {
+            return Optional.of(this.toDTO(optionalLivro.get()));
+        } else {
+            return Optional.empty(); // Caso não encontre
+        }
+    }
+
+
     // Converte de LivroDTO para Livro
     public Livro fromDTO(LivroDTO livroDTO) {
         Livro livro = new Livro();
         livro.setNome(livroDTO.getNome());
         livro.setISBN(livroDTO.getISBN());
         livro.setId(livroDTO.getId());
-        livro.setGenero(livroDTO.getGenero()); // Faltava adicionar o genero
+        livro.setGenero(livroDTO.getGenero());
 
         return livro;
     }
@@ -38,20 +61,7 @@ public class LivroService {
         return livroDTO;
     }
 
-    // Busca todos os livros
-    public List<Livro> getAll() {
-        return livroRepository.findAll();
-    }
 
-    // Busca um livro pelo ID
-    public Optional<LivroDTO> getById(Long id) {
-        Optional<Livro> optionalLivro = livroRepository.findById(id);
-        if (optionalLivro.isPresent()) {
-            return Optional.of(this.toDTO(optionalLivro.get()));
-        } else {
-            return Optional.empty(); // Caso não encontre
-        }
-    }
 
     // Salva um novo livro
     public LivroDTO saveDto(LivroDTO livroDTO) {

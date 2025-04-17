@@ -23,18 +23,17 @@ public class Emprestimo implements Serializable {
     private LocalDate data_inicio;
     private LocalDate data_final;
 
-    // Relacionamento Muitos para Um com Cliente
+    // Muitos para  Cliente
     @ManyToOne
     @JoinColumn(name = "cliente_id", referencedColumnName = "id")
-    @JsonManagedReference
     private Cliente cliente;
 
-    // Relacionamento Muitos para Muitos com Livro
+    // Muitos para Muitos com Livro
     @ManyToMany
     @JoinTable(
             name = "emprestimo_livro", // Nome da tabela de junção
-            joinColumns = @JoinColumn(name = "emprestimo_id"), // Coluna de junção com Emprestimo
-            inverseJoinColumns = @JoinColumn(name = "livro_id") // Coluna de junção com Livro
+            joinColumns = @JoinColumn(name = "emprestimo_id"),
+            inverseJoinColumns = @JoinColumn(name = "livro_id")
     )
     private Set<Livro> livros;
 

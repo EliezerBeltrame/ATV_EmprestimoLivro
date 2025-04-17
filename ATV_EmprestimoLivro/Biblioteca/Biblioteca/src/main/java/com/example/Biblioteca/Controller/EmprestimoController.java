@@ -18,19 +18,16 @@ public class EmprestimoController {
     private EmprestimoService emprestimoService;
 
     // Endpoint para buscar todos os empréstimos
-    @GetMapping
-    public ResponseEntity<List<EmprestimoDTOResponse>> getAll() {
-        List<EmprestimoDTOResponse> emprestimoDTOList = emprestimoService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(emprestimoDTOList);
+    @GetMapping("/{id}")
+    public ResponseEntity<EmprestimoDTOResponse> getById(@PathVariable Long id){
+        Optional<EmprestimoDTOResponse> emprestimoDTOOptional = emprestimoService.getById(id);
+        if(emprestimoDTOOptional.isPresent()){
+            return ResponseEntity.ok(emprestimoDTOOptional.get());
+        }else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Endpoint para buscar um empréstimo por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<EmprestimoDTOResponse> getById(@PathVariable Long id) {
-        Optional<EmprestimoDTOResponse> emprestimoDTO = emprestimoService.getById(id);
-        return emprestimoDTO.map(ResponseEntity::ok) // Se encontrado, retorna 200 OK com o DTO
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // Caso contrário, 404
-    }
 
     // Endpoint para criar um novo empréstimo
     @PostMapping

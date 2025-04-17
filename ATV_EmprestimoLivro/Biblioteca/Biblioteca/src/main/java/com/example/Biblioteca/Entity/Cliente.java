@@ -1,12 +1,14 @@
 package com.example.Biblioteca.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 
@@ -20,12 +22,13 @@ public class Cliente implements Serializable {
     private String nome;
     private String sobrenome;
 
-    @Column(unique = true) // CPF único
+    @Column(unique = true) //a column deixa o  CPF como  único
     private String cpf;
 
     @OneToMany(mappedBy = "cliente")
-    @JsonBackReference // Correção da anotação
-    private Set<Emprestimo> emprestimos; // Correção no tipo de Set
+
+    @JsonIgnore//ignora o atributo
+    private List<Emprestimo> emprestimo;
 
     // Construtor adicional corrigido
     public Cliente(long id, String nome, String sobrenome, String cpf) {

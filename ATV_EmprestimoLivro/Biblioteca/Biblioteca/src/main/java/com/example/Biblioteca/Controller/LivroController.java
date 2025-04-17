@@ -19,15 +19,20 @@ public class LivroController {
     private LivroService livroService;
 
     @GetMapping
-    public ResponseEntity<List<Livro>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(livroService.getAll());
+    public List<Livro> getAll(@RequestParam(required = false)String nome) {// @RequestParam vai pegar o valor de "?nome=NomeLivro", no caso "NomeLivro" realizar o filtro
+            if(nome != null && !nome.isEmpty()){
+        }
+        return livroService.getAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LivroDTO> getById(@PathVariable Long id) {
-        Optional<LivroDTO> livroDTO = livroService.getById(id);
-        return livroDTO.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        Optional<LivroDTO> livroDTOOptional = livroService.getById(id);
+        if(livroDTOOptional.isPresent()){
+            return ResponseEntity.ok(livroDTOOptional.get());
+        }else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping

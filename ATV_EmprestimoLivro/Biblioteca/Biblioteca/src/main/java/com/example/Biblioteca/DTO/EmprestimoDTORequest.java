@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -19,27 +20,7 @@ public class EmprestimoDTORequest implements Serializable {
     private LocalDate data_inicio;
     private LocalDate data_final;
     private Cliente cliente;
-    private Set<Livro> livros;
+    private List<Livro> livros;
 
-    // Método para converter de EmprestimoDTORequest para Emprestimo (Entidade)
-    public Emprestimo toEmprestimo() {
-        return new Emprestimo(
-                this.id,
-                this.data_inicio,
-                this.data_final,
-                this.cliente,
-                this.livros
-        );
-    }
 
-    // Método para converter de Emprestimo (Entidade) para EmprestimoDTO
-    public EmprestimoDTORequest toEmprestimoDTO(Emprestimo emprestimo) {
-        return new EmprestimoDTORequest(
-                emprestimo.getId(),
-                emprestimo.getData_inicio(),
-                emprestimo.getData_final(),
-                emprestimo.getCliente(),
-                emprestimo.getLivros()
-        );
-    }
 }
